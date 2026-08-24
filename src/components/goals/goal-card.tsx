@@ -55,7 +55,7 @@ export function GoalCard({ goal }: GoalCardProps) {
 
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
-            <button className="opacity-0 group-hover:opacity-100 p-1 rounded text-[var(--text-tertiary)] hover:bg-[var(--bg-elevated)]">
+            <button className="opacity-75 hover:opacity-100 p-1 rounded text-[var(--text-tertiary)] hover:bg-[var(--bg-elevated)]">
               <MoreHorizontal className="w-4 h-4" />
             </button>
           </DropdownMenu.Trigger>

@@ -47,9 +47,9 @@ export function RoutineCard({ routine, onEdit }: RoutineCardProps) {
 
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
-              <button className="opacity-0 group-hover:opacity-100 p-1 rounded text-[var(--text-tertiary)] hover:bg-[var(--bg-elevated)] transition-opacity">
-                <MoreHorizontal className="w-4 h-4" />
-              </button>
+              <button className="opacity-75 hover:opacity-100 p-1 rounded text-[var(--text-tertiary)] hover:bg-[var(--bg-elevated)] transition-opacity">
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content className="z-50 min-w-[120px] bg-[var(--bg-base)] border border-[var(--border)] rounded-lg shadow-lg p-1 text-xs" align="end">

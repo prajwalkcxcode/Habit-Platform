@@ -121,7 +121,7 @@ export function HabitItem({ habit, showDate, showStreak = true, compact = false 
           <DropdownMenu.Trigger asChild>
             <button
               onClick={e => e.stopPropagation()}
-              className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 rounded text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-all"
+              className="opacity-75 hover:opacity-100 p-1 rounded text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-all"
               aria-label="Habit actions"
             >
               <MoreHorizontal className="w-3.5 h-3.5" />

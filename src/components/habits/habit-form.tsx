@@ -70,7 +70,7 @@ export function HabitForm() {
     defaultValues: {
       name: '',
       description: '',
-      icon: '??',
+      icon: '🏃',
       accentColor: '#6366f1',
       categoryId: undefined,
       frequencyType: 'daily',
@@ -100,7 +100,7 @@ export function HabitForm() {
       reset({
         name: '',
         description: '',
-        icon: '??',
+        icon: '🏃',
         accentColor: '#6366f1',
         categoryId: undefined,
         frequencyType: 'daily',
