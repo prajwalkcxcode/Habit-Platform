@@ -1,3 +1,14 @@
+﻿const fs = require('fs');
+const path = require('path');
+
+function writeFile(relPath, content) {
+  const fullPath = path.join(__dirname, relPath);
+  fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+  fs.writeFileSync(fullPath, content.trim() + '\n', 'utf8');
+  console.log('Wrote ' + relPath);
+}
+
+writeFile('src/app/settings/page.tsx', `
 'use client'
 
 import * as React from 'react'
@@ -86,7 +97,7 @@ export default function SettingsPage() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `habit-backup-v4-${new Date().toISOString().split('T')[0]}.json`
+    a.download = \`habit-backup-v4-\${new Date().toISOString().split('T')[0]}.json\`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -121,11 +132,11 @@ export default function SettingsPage() {
                 <button
                   key={t}
                   onClick={() => setTheme(t)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs capitalize transition-colors ${
+                  className={\`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs capitalize transition-colors \${
                     theme === t
                       ? 'bg-[var(--bg-base)] text-[var(--text-primary)] font-medium shadow-sm border border-[var(--border)]'
                       : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
-                  }`}
+                  }\`}
                 >
                   {t === 'light' && <Sun className="w-3 h-3" />}
                   {t === 'dark' && <Moon className="w-3 h-3" />}
@@ -175,7 +186,7 @@ export default function SettingsPage() {
                   </div>
                   
                   <Button className="w-full flex items-center justify-center gap-2" onClick={triggerSync} disabled={syncStatus === 'syncing'}>
-                    <RefreshCw className={`w-4 h-4 ${syncStatus === 'syncing' ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={\`w-4 h-4 \${syncStatus === 'syncing' ? 'animate-spin' : ''}\`} />
                     Sync Data to Cloud
                   </Button>
                 </div>
@@ -259,3 +270,6 @@ export default function SettingsPage() {
     </div>
   )
 }
+`);
+
+console.log('Settings Auth Page Updated');

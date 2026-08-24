@@ -1,13 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import { User, Edit } from 'lucide-react'
+import { User, Edit, Settings } from 'lucide-react'
 import { useProfileStore } from '@/lib/store/profile'
 import { ConsistencyCard } from '@/components/v5/consistency-card'
 import { PartnerPanel } from '@/components/v5/partner-panel'
 import { WeeklyWinCard } from '@/components/v5/weekly-win-card'
 import { ProfileSetupModal } from '@/components/v5/profile-setup-modal'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function ProfilePage() {
   const profile = useProfileStore(s => s.profile)
@@ -27,9 +28,16 @@ export default function ProfilePage() {
             Share your consistency card and stay accountable with partners.
           </p>
         </div>
-        <Button size="sm" variant="secondary" onClick={() => setSetupOpen(true)}>
-          <Edit className="w-3.5 h-3.5" /> Edit Profile
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link href="/settings">
+            <Button size="sm" variant="secondary">
+              <Settings className="w-3.5 h-3.5" /> Settings
+            </Button>
+          </Link>
+          <Button size="sm" variant="secondary" onClick={() => setSetupOpen(true)}>
+            <Edit className="w-3.5 h-3.5" /> Edit Profile
+          </Button>
+        </div>
       </div>
 
       {/* Consistency Card */}

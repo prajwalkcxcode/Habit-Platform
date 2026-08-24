@@ -14,6 +14,8 @@ import { useReflectionsStore } from '@/lib/store/reflections'
 import { useV3Store } from '@/lib/store/v3'
 import { useSyncStore } from '@/lib/store/sync'
 import { useUIStore } from '@/lib/store/ui'
+import { useProfileStore } from '@/lib/store/profile'
+import Link from 'next/link'
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const loadHabits = useHabitStore(s => s.loadAll)
@@ -44,15 +46,35 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [habitsInitialized, routinesInitialized, goalsInitialized, reflectionsInitialized, v3Initialized,
       loadHabits, loadRoutines, loadGoals, loadReflections, loadV3])
 
-  // Online/Offline sync status watcher
+  // Online/Offline sync status watcher & trigger sync
   React.useEffect(() => {
-    const handleOnline = () => setOnline(true)
+    const handleOnline = () => {
+      setOnline(true)
+      const { syncLocalToCloud } = require('@/lib/cloud/sync-engine')
+      syncLocalToCloud()
+    }
     const handleOffline = () => setOnline(false)
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
+
+    // Periodic sync every 60 seconds
+    const interval = setInterval(() => {
+      if (navigator.onLine) {
+        const { syncLocalToCloud } = require('@/lib/cloud/sync-engine')
+        syncLocalToCloud()
+      }
+    }, 60000)
+
+    // Initial sync
+    if (navigator.onLine) {
+      const { syncLocalToCloud } = require('@/lib/cloud/sync-engine')
+      syncLocalToCloud()
+    }
+
     return () => {
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
+      clearInterval(interval)
     }
   }, [setOnline])
 
@@ -71,8 +93,32 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [openHabitForm])
 
+  const profile = useProfileStore(s => s.profile)
+  const hasSetup = useProfileStore(s => s.hasSetup)
+
   return (
-    <div className="flex h-full">
+    <div className="flex h-full flex-col md:flex-row">
+      {/* Mobile Top Header */}
+      <header className="md:hidden flex items-center justify-between px-4 h-12 border-b border-[var(--border)] bg-[var(--bg-base)] shrink-0 sticky top-0 z-30">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded bg-[var(--accent)] flex items-center justify-center flex-shrink-0">
+            <span className="text-white text-xs font-bold">H</span>
+          </div>
+          <span className="text-sm font-semibold text-[var(--text-primary)] tracking-tight">
+            Habit Platform
+          </span>
+        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/profile"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]"
+          >
+            <span>{profile.avatarEmoji || '😎'}</span>
+            <span className="font-medium max-w-[100px] truncate">{hasSetup && profile.username ? profile.username : 'Profile'}</span>
+          </Link>
+        </div>
+      </header>
+
       <Sidebar />
       <main className="flex-1 min-w-0 overflow-y-auto pb-16 md:pb-0">
         {children}

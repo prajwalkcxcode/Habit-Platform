@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useProfileStore } from '@/lib/store/profile'
+import { useUIStore } from '@/lib/store/ui'
 
-const AVATAR_OPTIONS = ['😎','🧠','💪','🌱','🚀','🎯','🔥','📚','🧘','🦁','🐺','⚡','🏔','🌊','🎸','🎨']
+const AVATAR_OPTIONS = ['😎','🧠','💪','🌱','🚀','🎯','🔥','📚','🧘','🦁','🐺','⚡','🏔','🌊','🎨','💫']
 
 interface ProfileSetupModalProps {
   open: boolean
@@ -17,6 +18,7 @@ interface ProfileSetupModalProps {
 export function ProfileSetupModal({ open, onOpenChange }: ProfileSetupModalProps) {
   const profile = useProfileStore(s => s.profile)
   const setProfile = useProfileStore(s => s.setProfile)
+  const showToast = useUIStore(s => s.showToast)
 
   const [username, setUsername] = React.useState(profile.username || '')
   const [bio, setBio] = React.useState(profile.bio || '')
@@ -25,7 +27,9 @@ export function ProfileSetupModal({ open, onOpenChange }: ProfileSetupModalProps
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault()
     if (!username.trim()) return
-    setProfile({ username: username.trim(), bio: bio.trim(), avatarEmoji: avatar })
+    const cleanUsername = username.trim()
+    setProfile({ username: cleanUsername, bio: bio.trim(), avatarEmoji: avatar })
+    showToast(`🎉 Welcome, ${cleanUsername}! Your profile is ready.`, 'success')
     onOpenChange(false)
   }
 
