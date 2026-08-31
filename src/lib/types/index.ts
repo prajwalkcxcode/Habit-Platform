@@ -62,6 +62,9 @@ export interface Habit {
   priority: Priority
   difficulty: Difficulty
   status: HabitStatus
+  identityTag?: string
+  stackedAfterHabitId?: string
+  stackTriggerText?: string
   createdAt: string  // ISO date string (YYYY-MM-DD)
   updatedAt: string  // ISO timestamp
 }
@@ -83,7 +86,7 @@ export interface HabitStats {
   currentStreak: number
   bestStreak: number
   totalCompletions: number
-  completionRate: number  // 0�1, based on scheduled days since creation
+  completionRate: number  // 0–1, based on scheduled days since creation
   missedDays: number
   lastCompletedDate?: string
 }
@@ -93,6 +96,8 @@ export interface HabitStats {
 export interface UserSettings {
   theme: Theme
   weekStartsOn: 0 | 1  // 0=Sun, 1=Mon
+  soundEnabled?: boolean
+  hapticsEnabled?: boolean
 }
 
 // --- UI State ----------------------------------------------------------------

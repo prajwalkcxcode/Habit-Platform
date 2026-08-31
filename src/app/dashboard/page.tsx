@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Plus, Calendar as CalendarIcon, Sparkles, Clock, User2, Zap, Flame } from 'lucide-react'
+import { Plus, Calendar as CalendarIcon, Sparkles, Clock, User2, Zap, Flame, Receipt } from 'lucide-react'
 import { formatFullDate, toDateString, isSameDateDay } from '@/lib/utils/date'
 import { useHabitStore } from '@/lib/store/habits'
 import { useUIStore } from '@/lib/store/ui'
@@ -13,6 +13,7 @@ import { StreakBadge } from '@/components/dashboard/streak-badge'
 import { ReflectionCard } from '@/components/reflection/reflection-card'
 import { TemplateModal } from '@/components/templates/template-modal'
 import { ProfileSetupModal } from '@/components/v5/profile-setup-modal'
+import { WeeklyReceiptModal } from '@/components/dashboard/weekly-receipt-modal'
 import { AICoachCard } from '@/components/v3/ai-coach-card'
 import { FocusTimerModal } from '@/components/v3/focus-timer-modal'
 import { Button } from '@/components/ui/button'
@@ -24,6 +25,7 @@ export default function DashboardPage() {
   const [templateOpen, setTemplateOpen] = React.useState(false)
   const [focusTimerOpen, setFocusTimerOpen] = React.useState(false)
   const [setupOpen, setSetupOpen] = React.useState(false)
+  const [receiptOpen, setReceiptOpen] = React.useState(false)
 
   const habits = useHabitStore(s => s.habits)
   const completions = useHabitStore(s => s.completions)
@@ -169,6 +171,9 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button size="sm" variant="ghost" onClick={() => setReceiptOpen(true)} className="text-xs h-7">
+            <Receipt className="w-3.5 h-3.5 text-[var(--accent)]" /> Receipt
+          </Button>
           <Button size="sm" variant="ghost" onClick={() => setTemplateOpen(true)} className="text-xs h-7">
             <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" /> Starter Packs
           </Button>
@@ -195,6 +200,7 @@ export default function DashboardPage() {
       <TemplateModal open={templateOpen} onOpenChange={setTemplateOpen} />
       <FocusTimerModal open={focusTimerOpen} onOpenChange={setFocusTimerOpen} />
       <ProfileSetupModal open={setupOpen} onOpenChange={setSetupOpen} />
+      <WeeklyReceiptModal open={receiptOpen} onOpenChange={setReceiptOpen} />
     </div>
   )
 }

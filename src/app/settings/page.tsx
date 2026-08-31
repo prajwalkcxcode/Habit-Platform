@@ -9,17 +9,22 @@ import { Button } from '@/components/ui/button'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Download, Monitor, Smartphone, Moon, Sun, Cloud, RefreshCw, LogOut } from 'lucide-react'
+import { Download, Monitor, Smartphone, Moon, Sun, Cloud, RefreshCw, LogOut, Volume2, VolumeX, Vibrate, Receipt } from 'lucide-react'
 import type { Theme } from '@/lib/types'
 import { supabase, isCloudEnabled } from '@/lib/cloud/supabase'
 import { syncLocalToCloud } from '@/lib/cloud/sync-engine'
 import { useUIStore } from '@/lib/store/ui'
+import { WeeklyReceiptModal } from '@/components/dashboard/weekly-receipt-modal'
 
 export default function SettingsPage() {
   const theme = useSettingsStore(s => s.theme)
   const setTheme = useSettingsStore(s => s.setTheme)
   const weekStartsOn = useSettingsStore(s => s.weekStartsOn)
   const setWeekStartsOn = useSettingsStore(s => s.setWeekStartsOn)
+  const soundEnabled = useSettingsStore(s => s.soundEnabled)
+  const setSoundEnabled = useSettingsStore(s => s.setSoundEnabled)
+  const hapticsEnabled = useSettingsStore(s => s.hapticsEnabled)
+  const setHapticsEnabled = useSettingsStore(s => s.setHapticsEnabled)
   const cloudEnabled = useSyncStore(s => s.cloudEnabled)
   const syncStatus = useSyncStore(s => s.status)
   const setSyncStatus = useSyncStore(s => s.setStatus)
@@ -27,7 +32,8 @@ export default function SettingsPage() {
   const completions = useHabitStore(s => s.completions)
   const showToast = useUIStore(s => s.showToast)
 
-  // Auth State
+  // Auth State & Receipt State
+  const [receiptOpen, setReceiptOpen] = React.useState(false)
   const [session, setSession] = React.useState<any>(null)
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -154,6 +160,71 @@ export default function SettingsPage() {
         </div>
       </section>
 
+      {/* Sound & Haptic Feedback */}
+      <section className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">Feedback & Micro-Interactions</h2>
+        <div className="p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-base)] space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              {soundEnabled ? <Volume2 className="w-4 h-4 text-[var(--accent)]" /> : <VolumeX className="w-4 h-4 text-[var(--text-tertiary)]" />}
+              <div>
+                <p className="text-sm font-medium text-[var(--text-primary)]">Completion Audio</p>
+                <p className="text-xs text-[var(--text-tertiary)]">Satisfying click & chime when checking off habits</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSoundEnabled(!soundEnabled)}
+              className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${
+                soundEnabled
+                  ? 'bg-[var(--accent-subtle)] text-[var(--accent)] border border-[var(--accent)]/30'
+                  : 'bg-[var(--bg-elevated)] text-[var(--text-tertiary)] border border-[var(--border)]'
+              }`}
+            >
+              {soundEnabled ? 'Enabled' : 'Muted'}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between border-t border-[var(--border)] pt-3">
+            <div className="flex items-center gap-2.5">
+              <Vibrate className="w-4 h-4 text-[var(--accent)]" />
+              <div>
+                <p className="text-sm font-medium text-[var(--text-primary)]">Mobile Haptics</p>
+                <p className="text-xs text-[var(--text-tertiary)]">Subtle vibration pulse on mobile & touch devices</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setHapticsEnabled(!hapticsEnabled)}
+              className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${
+                hapticsEnabled
+                  ? 'bg-[var(--accent-subtle)] text-[var(--accent)] border border-[var(--accent)]/30'
+                  : 'bg-[var(--bg-elevated)] text-[var(--text-tertiary)] border border-[var(--border)]'
+              }`}
+            >
+              {hapticsEnabled ? 'Enabled' : 'Disabled'}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Weekly Consistency Receipt */}
+      <section className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">Weekly Proof of Effort</h2>
+        <div className="p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-base)] flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <Receipt className="w-4 h-4 text-[var(--accent)]" />
+            <div>
+              <p className="text-sm font-medium text-[var(--text-primary)]">Consistency Receipt</p>
+              <p className="text-xs text-[var(--text-tertiary)]">View or copy a minimalist receipt of this week's progress</p>
+            </div>
+          </div>
+          <Button size="sm" variant="secondary" onClick={() => setReceiptOpen(true)}>
+            View Receipt
+          </Button>
+        </div>
+      </section>
+
       {/* Cloud & Sync */}
       <section className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">Cloud Sync</h2>
@@ -256,6 +327,9 @@ export default function SettingsPage() {
           </div>
         </div>
       </section>
+
+      {/* Weekly Receipt Modal */}
+      <WeeklyReceiptModal open={receiptOpen} onOpenChange={setReceiptOpen} />
     </div>
   )
 }

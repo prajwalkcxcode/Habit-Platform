@@ -8,6 +8,7 @@ import { useHabitStore } from '@/lib/store/habits'
 import { useUIStore } from '@/lib/store/ui'
 import type { Habit } from '@/lib/types'
 import { Badge } from '@/components/ui/badge'
+import { sound, triggerHaptic } from '@/lib/audio/haptics'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 
 interface HabitItemProps {
@@ -38,6 +39,8 @@ export function HabitItem({ habit, showDate, showStreak = true, compact = false 
     e.stopPropagation()
     await toggleCompletion(habit.id, showDate)
     if (!isCompleted) {
+      sound.playCompletion()
+      triggerHaptic('light')
       showToast(`${habit.icon} ${habit.name} marked complete`, 'success')
     }
   }
@@ -91,14 +94,26 @@ export function HabitItem({ habit, showDate, showStreak = true, compact = false 
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <span className="text-base leading-none flex-shrink-0" aria-hidden>{habit.icon}</span>
         <div className="min-w-0">
-          <p
-            className={cn(
-              'text-sm font-medium text-[var(--text-primary)] truncate',
-              isCompleted && 'line-through text-[var(--text-tertiary)]'
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <p
+              className={cn(
+                'text-sm font-medium text-[var(--text-primary)] truncate',
+                isCompleted && 'line-through text-[var(--text-tertiary)]'
+              )}
+            >
+              {habit.name}
+            </p>
+            {habit.identityTag && (
+              <span className="inline-flex items-center px-1.5 py-0.2 text-[9px] font-medium rounded bg-[var(--accent-subtle)] text-[var(--accent)] border border-[var(--accent)]/20">
+                {habit.identityTag}
+              </span>
             )}
-          >
-            {habit.name}
-          </p>
+            {habit.stackTriggerText && (
+              <span className="inline-flex items-center px-1.5 py-0.2 text-[9px] font-medium rounded bg-[var(--bg-elevated)] text-[var(--text-tertiary)] border border-[var(--border)]">
+                ⛓️ {habit.stackTriggerText}
+              </span>
+            )}
+          </div>
           {habit.description && !compact && (
             <p className="text-xs text-[var(--text-tertiary)] truncate mt-0.5">{habit.description}</p>
           )}

@@ -29,6 +29,17 @@ import { DEFAULT_CATEGORIES, ACCENT_COLORS, HABIT_ICONS } from '@/lib/types'
 import { cn } from '@/lib/utils/cn'
 import type { Habit, FrequencyType, PreferredTime, Priority, Difficulty } from '@/lib/types'
 
+export const IDENTITY_OPTIONS = [
+  'Athlete',
+  'Writer',
+  'Mindful Thinker',
+  'Builder',
+  'Learner',
+  'Healthy & Energized',
+  'Focused Producer',
+  'Creative Mind',
+]
+
 const schema = z.object({
   name: z.string().min(1, 'Name is required').max(60, 'Too long'),
   description: z.string().max(200, 'Too long').optional(),
@@ -40,6 +51,8 @@ const schema = z.object({
   preferredTime: z.enum(['morning', 'afternoon', 'evening', 'anytime'] as const),
   priority: z.enum(['low', 'medium', 'high'] as const),
   difficulty: z.enum(['easy', 'medium', 'hard'] as const),
+  identityTag: z.string().optional(),
+  stackTriggerText: z.string().max(50, 'Too long').optional(),
 })
 
 type FormData = z.infer<typeof schema>
@@ -78,6 +91,8 @@ export function HabitForm() {
       preferredTime: 'anytime',
       priority: 'medium',
       difficulty: 'medium',
+      identityTag: '',
+      stackTriggerText: '',
     },
   })
 
@@ -95,6 +110,8 @@ export function HabitForm() {
         preferredTime: editingHabit.preferredTime,
         priority: editingHabit.priority ?? 'medium',
         difficulty: editingHabit.difficulty ?? 'medium',
+        identityTag: editingHabit.identityTag ?? '',
+        stackTriggerText: editingHabit.stackTriggerText ?? '',
       })
     } else {
       reset({
@@ -108,6 +125,8 @@ export function HabitForm() {
         preferredTime: 'anytime',
         priority: 'medium',
         difficulty: 'medium',
+        identityTag: '',
+        stackTriggerText: '',
       })
     }
   }, [editingHabit, reset, isOpen])
@@ -139,6 +158,8 @@ export function HabitForm() {
       preferredTime: data.preferredTime as PreferredTime,
       priority: data.priority as Priority,
       difficulty: data.difficulty as Difficulty,
+      identityTag: data.identityTag ? data.identityTag : undefined,
+      stackTriggerText: data.stackTriggerText ? data.stackTriggerText : undefined,
       status: 'active' as const,
     }
 
@@ -223,6 +244,38 @@ export function HabitForm() {
                 placeholder="What is this habit for?"
                 rows={2}
                 {...register('description')}
+              />
+            </div>
+
+            {/* Identity Tag (Atomic Habits) */}
+            <div>
+              <Label className="mb-1.5 block">Identity Anchor <span className="text-[10px] text-[var(--text-tertiary)]">(Who are you becoming?)</span></Label>
+              <Controller
+                control={control}
+                name="identityTag"
+                render={({ field }) => (
+                  <Select value={field.value ?? ''} onValueChange={v => field.onChange(v === 'none' ? '' : v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an identity (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {IDENTITY_OPTIONS.map(id => (
+                        <SelectItem key={id} value={id}>{id}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            {/* Habit Stacking (Atomic Habits) */}
+            <div>
+              <Label htmlFor="stackTriggerText" className="mb-1.5 block">Habit Stacking Trigger <span className="text-[10px] text-[var(--text-tertiary)]">(Anchor to existing routine)</span></Label>
+              <Input
+                id="stackTriggerText"
+                placeholder="e.g. After pouring morning coffee, Before bed..."
+                {...register('stackTriggerText')}
               />
             </div>
 
@@ -344,9 +397,9 @@ export function HabitForm() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="anytime">Anytime</SelectItem>
-                      <SelectItem value="morning">?? Morning</SelectItem>
-                      <SelectItem value="afternoon">??? Afternoon</SelectItem>
-                      <SelectItem value="evening">?? Evening</SelectItem>
+                      <SelectItem value="morning">🌅 Morning</SelectItem>
+                      <SelectItem value="afternoon">☀️ Afternoon</SelectItem>
+                      <SelectItem value="evening">🌙 Evening</SelectItem>
                     </SelectContent>
                   </Select>
                 )}

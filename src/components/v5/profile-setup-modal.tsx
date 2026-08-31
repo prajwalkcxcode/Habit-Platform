@@ -62,12 +62,12 @@ export function ProfileSetupModal({ open, onOpenChange }: ProfileSetupModalProps
           </div>
 
           <div>
-            <Label className="mb-1.5 block">Username</Label>
+            <Label className="mb-1.5 block">Username / Display Name</Label>
             <Input
-              placeholder="e.g. prajwal_k"
+              placeholder="e.g. Prajwal"
               value={username}
-              onChange={e => setUsername(e.target.value.toLowerCase().replace(/s+/g, '_'))}
-              maxLength={24}
+              onChange={e => setUsername(e.target.value)}
+              maxLength={30}
               required
             />
             <p className="text-[10px] text-[var(--text-tertiary)] mt-1">
