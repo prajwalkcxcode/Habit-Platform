@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Plus } from 'lucide-react'
+import { Plus, Sparkles, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useHabitStore } from '@/lib/store/habits'
 import { useUIStore } from '@/lib/store/ui'
@@ -15,10 +15,11 @@ import type { Habit } from '@/lib/types'
 interface HabitListProps {
   date?: Date
   filter?: 'all' | 'active' | 'pending'
+  timeFilter?: 'all' | 'morning' | 'afternoon' | 'evening'
   className?: string
 }
 
-export function HabitList({ date, filter = 'all', className }: HabitListProps) {
+export function HabitList({ date, filter = 'all', timeFilter = 'all', className }: HabitListProps) {
   const habits = useHabitStore(s => s.habits)
   const completions = useHabitStore(s => s.completions)
   const openHabitForm = useUIStore(s => s.openHabitForm)
@@ -32,31 +33,50 @@ export function HabitList({ date, filter = 'all', className }: HabitListProps) {
   }, [habits, targetDate])
 
   const filteredHabits = React.useMemo(() => {
+    let result = scheduledHabits
+
+    if (timeFilter !== 'all') {
+      result = result.filter(h => h.preferredTime === timeFilter || h.preferredTime === 'anytime')
+    }
+
     if (filter === 'pending') {
-      return scheduledHabits.filter(
+      result = result.filter(
         h => !completions.some(c => c.habitId === h.id && c.date === dateStr)
       )
     }
-    return scheduledHabits
-  }, [scheduledHabits, filter, completions, dateStr])
+
+    return result
+  }, [scheduledHabits, filter, timeFilter, completions, dateStr])
 
   if (scheduledHabits.length === 0) {
     return (
-      <EmptyState
-        title="No habits scheduled"
-        description="Create your first habit to start tracking."
-        action={
-          <Button size="sm" onClick={() => openHabitForm()}>
-            <Plus className="w-3.5 h-3.5" /> New habit
-          </Button>
-        }
-        className={className}
-      />
+      <div className="p-8 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xs">
+        <EmptyState
+          title="No habits scheduled today"
+          description="Create your first habit or apply a starter pack to build your daily consistency."
+          action={
+            <Button size="sm" onClick={() => openHabitForm()} className="rounded-xl font-semibold shadow-xs">
+              <Plus className="w-3.5 h-3.5" /> Create Your First Habit
+            </Button>
+          }
+          className={className}
+        />
+      </div>
+    )
+  }
+
+  if (filteredHabits.length === 0 && filter === 'pending') {
+    return (
+      <div className="p-8 rounded-2xl border border-green-500/20 bg-green-500/5 text-center space-y-2">
+        <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto animate-check-pop" />
+        <p className="text-sm font-bold text-[var(--text-primary)]">All habits finished for today! 🎉</p>
+        <p className="text-xs text-[var(--text-tertiary)]">Outstanding focus. Check out your weekly consistency receipt or relax.</p>
+      </div>
     )
   }
 
   return (
-    <div className={cn('divide-y divide-[var(--border)]', className)}>
+    <div className={cn('space-y-2.5 sm:space-y-3', className)}>
       {filteredHabits.map(habit => (
         <HabitItem
           key={habit.id}

@@ -12,9 +12,9 @@ interface HabitCalendarProps {
   months?: number
 }
 
-const WEEK_DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+const WEEK_DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
-export function HabitCalendar({ habit, completions, months = 4 }: HabitCalendarProps) {
+export function HabitCalendar({ habit, completions, months = 3 }: HabitCalendarProps) {
   const completedSet = React.useMemo(
     () => new Set(completions.filter(c => c.habitId === habit.id).map(c => c.date)),
     [completions, habit.id]
@@ -32,13 +32,13 @@ export function HabitCalendar({ habit, completions, months = 4 }: HabitCalendarP
   }, [months])
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {monthsData.map(({ label, days }) => (
-        <div key={label}>
-          <p className="text-xs font-medium text-[var(--text-tertiary)] mb-2">{label}</p>
-          <div className="grid grid-cols-7 gap-px">
+        <div key={label} className="p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-xs space-y-2.5">
+          <p className="text-xs font-bold text-[var(--text-primary)]">{label}</p>
+          <div className="grid grid-cols-7 gap-1 text-center">
             {WEEK_DAYS.map((d, i) => (
-              <div key={i} className="text-[10px] text-center text-[var(--text-tertiary)] pb-1">{d}</div>
+              <div key={i} className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase pb-1">{d}</div>
             ))}
             {/* Offset for first day */}
             {Array.from({ length: days[0].getDay() }).map((_, i) => (
@@ -54,15 +54,15 @@ export function HabitCalendar({ habit, completions, months = 4 }: HabitCalendarP
               return (
                 <div
                   key={dateStr}
-                  title={`${formatDate(day, 'MMM d')}: ${isCompleted ? 'Done' : isScheduled && isPast ? 'Missed' : 'Not scheduled'}`}
+                  title={`${formatDate(day, 'MMM d')}: ${isCompleted ? 'Completed' : isScheduled && isPast ? 'Missed' : 'Not scheduled'}`}
                   className={cn(
-                    'aspect-square rounded-sm flex items-center justify-center text-[10px] transition-colors',
+                    'aspect-square rounded-xl flex items-center justify-center text-xs tabular-nums transition-colors font-medium',
                     isCompleted
-                      ? 'bg-[var(--accent)] text-white font-medium'
+                      ? 'bg-[var(--accent)] text-white font-bold shadow-2xs'
                       : isScheduled && isPast && !isToday
-                        ? 'bg-[var(--bg-elevated)] text-[var(--text-tertiary)]'
-                        : 'text-[var(--text-tertiary)] opacity-40',
-                    isToday && !isCompleted && 'ring-1 ring-[var(--accent)] ring-inset'
+                      ? 'bg-[var(--bg-elevated)] text-[var(--text-tertiary)]'
+                      : 'text-[var(--text-tertiary)] opacity-40',
+                    isToday && !isCompleted && 'ring-2 ring-[var(--accent)] ring-inset font-bold text-[var(--accent)]'
                   )}
                 >
                   {day.getDate()}

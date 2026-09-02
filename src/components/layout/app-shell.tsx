@@ -97,30 +97,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const hasSetup = useProfileStore(s => s.hasSetup)
 
   return (
-    <div className="flex h-full flex-col md:flex-row">
+    <div className="flex h-full flex-col md:flex-row bg-[var(--bg-base)] antialiased overflow-hidden">
       {/* Mobile Top Header */}
-      <header className="md:hidden flex items-center justify-between px-4 h-12 border-b border-[var(--border)] bg-[var(--bg-base)] shrink-0 sticky top-0 z-30">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded bg-[var(--accent)] flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-xs font-bold">H</span>
+      <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-[var(--border)] bg-[var(--bg-card)]/90 backdrop-blur-md shrink-0 sticky top-0 z-30 shadow-subtle safe-area-pt">
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-[var(--accent)] flex items-center justify-center flex-shrink-0 shadow-xs">
+            <span className="text-white text-xs font-black">H</span>
           </div>
-          <span className="text-sm font-semibold text-[var(--text-primary)] tracking-tight">
-            Habit Platform
+          <span className="text-sm font-bold text-[var(--text-primary)] tracking-tight">
+            Habit
           </span>
         </Link>
         <div className="flex items-center gap-2">
           <Link
             href="/profile"
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)]"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-subtle)] transition-colors shadow-2xs"
           >
             <span>{profile.avatarEmoji || '😎'}</span>
-            <span className="font-medium max-w-[100px] truncate">{hasSetup && profile.username ? profile.username : 'Profile'}</span>
+            <span className="font-semibold max-w-[100px] truncate">{hasSetup && profile.username ? profile.username : 'Profile'}</span>
           </Link>
         </div>
       </header>
 
       <Sidebar />
-      <main className="flex-1 min-w-0 overflow-y-auto pb-16 md:pb-0">
+      <main className="flex-1 min-w-0 overflow-y-auto pb-20 md:pb-8 transition-colors">
         {children}
       </main>
       <MobileNav />

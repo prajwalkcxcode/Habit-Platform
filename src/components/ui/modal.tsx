@@ -17,7 +17,7 @@ const ModalOverlay = React.forwardRef<
   <Dialog.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 bg-black/50 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className
     )}
     {...props}
@@ -34,7 +34,7 @@ const ModalContent = React.forwardRef<
     <Dialog.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] w-full max-w-md bg-[var(--bg-base)] border border-[var(--border)] rounded-lg shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]',
+        'fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] w-full max-w-lg bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl shadow-floating duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] max-h-[90vh] flex flex-col',
         className
       )}
       {...props}
@@ -51,7 +51,7 @@ const ModalHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex items-center justify-between px-5 py-4 border-b border-[var(--border)]',
+      'flex items-center justify-between px-6 py-4 border-b border-[var(--border)] shrink-0',
       className
     )}
     {...props}
@@ -65,7 +65,7 @@ const ModalFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex items-center justify-end gap-2 px-5 py-4 border-t border-[var(--border)]',
+      'flex items-center justify-end gap-2.5 px-6 py-4 border-t border-[var(--border)] shrink-0',
       className
     )}
     {...props}
@@ -79,7 +79,7 @@ const ModalTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <Dialog.Title
     ref={ref}
-    className={cn('text-sm font-semibold text-[var(--text-primary)]', className)}
+    className={cn('text-base font-bold text-[var(--text-primary)] tracking-tight', className)}
     {...props}
   />
 ))

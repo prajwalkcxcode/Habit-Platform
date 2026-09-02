@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { MoreHorizontal, Pencil, Archive, Trash2, Play, Pause } from 'lucide-react'
+import { MoreHorizontal, Pencil, Archive, Trash2, Play, Pause, Flame, Link2, Check } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { useHabitStore } from '@/lib/store/habits'
 import { useUIStore } from '@/lib/store/ui'
@@ -41,7 +41,7 @@ export function HabitItem({ habit, showDate, showStreak = true, compact = false 
     if (!isCompleted) {
       sound.playCompletion()
       triggerHaptic('light')
-      showToast(`${habit.icon} ${habit.name} marked complete`, 'success')
+      showToast(`${habit.icon} ${habit.name} completed! ✨`, 'success')
     }
   }
 
@@ -58,123 +58,135 @@ export function HabitItem({ habit, showDate, showStreak = true, compact = false 
 
   return (
     <div
-      className={cn(
-        'group flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[var(--bg-subtle)] cursor-pointer border-b border-[var(--border)] last:border-0',
-        isCompleted && 'opacity-60',
-        compact && 'py-2'
-      )}
       onClick={() => router.push(`/habits/${habit.id}`)}
+      className={cn(
+        'group relative flex items-center justify-between gap-3.5 p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 cursor-pointer',
+        isCompleted
+          ? 'bg-[var(--bg-subtle)]/70 border-[var(--border)] opacity-85'
+          : 'bg-[var(--bg-card)] border-[var(--border)] hover:border-[var(--border-strong)] hover:shadow-card shadow-subtle',
+        compact && 'p-2.5 sm:p-3'
+      )}
     >
-      {/* Checkbox */}
-      <button
-        onClick={handleToggle}
-        className={cn(
-          'w-[18px] h-[18px] rounded-[5px] border-[1.5px] flex-shrink-0 transition-all duration-150 flex items-center justify-center',
-          isCompleted
-            ? 'border-[var(--accent)] bg-[var(--accent)]'
-            : 'border-[var(--border-strong)] hover:border-[var(--accent)] hover:bg-[var(--accent-subtle)]'
-        )}
-        aria-label={isCompleted ? 'Mark incomplete' : 'Mark complete'}
-        aria-pressed={isCompleted}
-      >
-        {isCompleted && (
-          <svg viewBox="0 0 10 8" className="w-2.5 h-2" fill="none">
-            <path
-              d="M1 4L3.5 6.5L9 1"
-              stroke="white"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        )}
-      </button>
+      {/* Left side: Checkbox + Icon + Details */}
+      <div className="flex items-center gap-3.5 min-w-0 flex-1">
+        {/* Checkbox */}
+        <button
+          type="button"
+          onClick={handleToggle}
+          className={cn(
+            'w-6 h-6 rounded-xl border-2 flex items-center justify-center shrink-0 transition-all duration-200',
+            isCompleted
+              ? 'bg-[var(--accent)] border-[var(--accent)] text-white shadow-xs scale-95'
+              : 'border-[var(--border-strong)] hover:border-[var(--accent)] bg-[var(--bg-card)] hover:bg-[var(--accent-subtle)]'
+          )}
+          aria-label={isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
+        >
+          {isCompleted && (
+            <Check className="w-3.5 h-3.5 stroke-[3] text-white animate-check-pop" />
+          )}
+        </button>
 
-      {/* Icon + Name */}
-      <div className="flex items-center gap-2 flex-1 min-w-0">
-        <span className="text-base leading-none flex-shrink-0" aria-hidden>{habit.icon}</span>
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <p
+        {/* Icon */}
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 border border-[var(--border)] shadow-2xs transition-transform group-hover:scale-105"
+          style={{ backgroundColor: `${habit.accentColor}12` }}
+        >
+          <span aria-hidden>{habit.icon}</span>
+        </div>
+
+        {/* Text & Metadata */}
+        <div className="min-w-0 flex-1 space-y-0.5">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3
               className={cn(
-                'text-sm font-medium text-[var(--text-primary)] truncate',
+                'text-sm font-semibold text-[var(--text-primary)] truncate transition-all',
                 isCompleted && 'line-through text-[var(--text-tertiary)]'
               )}
             >
               {habit.name}
-            </p>
+            </h3>
+
+            {/* Identity Tag (Atomic Habits) */}
             {habit.identityTag && (
-              <span className="inline-flex items-center px-1.5 py-0.2 text-[9px] font-medium rounded bg-[var(--accent-subtle)] text-[var(--accent)] border border-[var(--accent)]/20">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--accent-subtle)] text-[var(--accent)] border border-[var(--accent)]/20 shadow-2xs">
                 {habit.identityTag}
               </span>
             )}
+
+            {/* Habit Stacking Trigger */}
             {habit.stackTriggerText && (
-              <span className="inline-flex items-center px-1.5 py-0.2 text-[9px] font-medium rounded bg-[var(--bg-elevated)] text-[var(--text-tertiary)] border border-[var(--border)]">
-                ⛓️ {habit.stackTriggerText}
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[var(--bg-elevated)] text-[var(--text-secondary)] border border-[var(--border)]">
+                <Link2 className="w-2.5 h-2.5 text-[var(--text-tertiary)]" />
+                <span>{habit.stackTriggerText}</span>
               </span>
             )}
           </div>
+
           {habit.description && !compact && (
-            <p className="text-xs text-[var(--text-tertiary)] truncate mt-0.5">{habit.description}</p>
+            <p className="text-xs text-[var(--text-tertiary)] truncate">
+              {habit.description}
+            </p>
           )}
         </div>
       </div>
 
-      {/* Right side */}
-      <div className="flex items-center gap-2 flex-shrink-0">
+      {/* Right side: Streak & Actions */}
+      <div className="flex items-center gap-2 shrink-0">
         {showStreak && stats.currentStreak > 0 && (
-          <span className="text-xs text-[var(--text-tertiary)] tabular-nums">
-            🔥 {stats.currentStreak}
-          </span>
-        )}
-        {habit.status === 'paused' && (
-          <Badge variant="secondary" className="text-[10px]">Paused</Badge>
+          <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 tabular-nums">
+            <Flame className="w-3 h-3 fill-orange-500 text-orange-500" />
+            <span>{stats.currentStreak}</span>
+          </div>
         )}
 
-        {/* Actions menu */}
+        {habit.status === 'paused' && (
+          <Badge variant="secondary" className="text-[10px] px-2 py-0.5">Paused</Badge>
+        )}
+
+        {/* Dropdown Menu */}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
             <button
               onClick={e => e.stopPropagation()}
-              className="opacity-75 hover:opacity-100 p-1 rounded text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-all"
-              aria-label="Habit actions"
+              className="p-1.5 rounded-lg text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors opacity-80 group-hover:opacity-100"
+              aria-label="Habit menu"
             >
-              <MoreHorizontal className="w-3.5 h-3.5" />
+              <MoreHorizontal className="w-4 h-4" />
             </button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
             <DropdownMenu.Content
-              className="z-50 min-w-[140px] bg-[var(--bg-base)] border border-[var(--border)] rounded-lg shadow-lg p-1 text-sm"
+              className="z-50 min-w-[150px] bg-[var(--bg-card)] border border-[var(--border)] rounded-xl shadow-elevated p-1 text-xs"
               align="end"
-              sideOffset={4}
+              sideOffset={5}
               onClick={e => e.stopPropagation()}
             >
               <DropdownMenu.Item
-                className="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] outline-none"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg cursor-pointer text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] outline-none font-medium"
                 onSelect={() => openHabitForm(habit.id)}
               >
-                <Pencil className="w-3.5 h-3.5" /> Edit
+                <Pencil className="w-3.5 h-3.5" /> Edit Habit
               </DropdownMenu.Item>
               <DropdownMenu.Item
-                className="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] outline-none"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg cursor-pointer text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] outline-none font-medium"
                 onSelect={handleStatusToggle}
               >
                 {habit.status === 'paused'
-                  ? <><Play className="w-3.5 h-3.5" /> Resume</>
-                  : <><Pause className="w-3.5 h-3.5" /> Pause</>}
+                  ? <><Play className="w-3.5 h-3.5" /> Resume Habit</>
+                  : <><Pause className="w-3.5 h-3.5" /> Pause Habit</>}
               </DropdownMenu.Item>
               <DropdownMenu.Item
-                className="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] outline-none"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg cursor-pointer text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] outline-none font-medium"
                 onSelect={() => updateHabit(habit.id, { status: 'archived' })}
               >
-                <Archive className="w-3.5 h-3.5" /> Archive
+                <Archive className="w-3.5 h-3.5" /> Archive Habit
               </DropdownMenu.Item>
               <DropdownMenu.Separator className="h-px bg-[var(--border)] my-1" />
               <DropdownMenu.Item
-                className="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-red-500 hover:bg-red-500/10 outline-none"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg cursor-pointer text-red-600 hover:bg-red-500/10 outline-none font-medium"
                 onSelect={handleDelete}
               >
-                <Trash2 className="w-3.5 h-3.5" /> Delete
+                <Trash2 className="w-3.5 h-3.5" /> Delete Habit
               </DropdownMenu.Item>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>

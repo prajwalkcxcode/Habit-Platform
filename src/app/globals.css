@@ -1,52 +1,102 @@
 @import "tailwindcss";
 
-/* ─── Design Tokens ─────────────────────────────────────────────────────── */
+/* ─── Modern Minimalist Design Tokens ──────────────────────────────────────── */
 
 :root {
-  /* Backgrounds */
-  --bg-base: #ffffff;
-  --bg-subtle: #f8f9fa;
-  --bg-elevated: #f1f3f5;
+  /* Canvas & Surfaces (Warm, calm, premium light) */
+  --bg-base: #fbfbfa;
+  --bg-card: #ffffff;
+  --bg-subtle: #f5f5f3;
+  --bg-elevated: #efefec;
+  --bg-glass: rgba(255, 255, 255, 0.85);
 
-  /* Borders */
-  --border: #e5e7eb;
-  --border-strong: #d1d5db;
+  /* Borders & Dividers */
+  --border: rgba(0, 0, 0, 0.07);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --border-glass: rgba(0, 0, 0, 0.05);
 
-  /* Text */
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-tertiary: #9ca3af;
+  /* Typography */
+  --text-primary: #141413;
+  --text-secondary: #5c5b56;
+  --text-tertiary: #8e8d86;
+  --text-muted: #b5b4ad;
 
-  /* Accent — indigo */
-  --accent: #6366f1;
-  --accent-hover: #4f46e5;
-  --accent-subtle: #eef2ff;
+  /* Accent — Refined Indigo / Slate */
+  --accent: #4338ca;
+  --accent-hover: #3730a3;
+  --accent-subtle: rgba(67, 56, 202, 0.08);
+  --accent-glow: rgba(67, 56, 202, 0.15);
+  --accent-contrast: #ffffff;
 
-  /* Status */
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  /* Status Colors (Calm & Subtle) */
+  --success: #15803d;
+  --success-subtle: rgba(21, 128, 61, 0.1);
+  --warning: #b45309;
+  --warning-subtle: rgba(180, 83, 9, 0.1);
+  --danger: #b91c1c;
+  --danger-subtle: rgba(185, 28, 28, 0.1);
+  --streak-fire: #ea580c;
+  --streak-subtle: rgba(234, 88, 12, 0.1);
 
-  /* Old compat */
+  /* Shadows (Natural & Soft) */
+  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  --shadow-elevated: 0 4px 12px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  --shadow-floating: 0 12px 28px -4px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Compatibility bindings */
   --background: var(--bg-base);
   --foreground: var(--text-primary);
 }
 
 .dark {
-  --bg-base: #0d0d0d;
-  --bg-subtle: #141414;
-  --bg-elevated: #1c1c1c;
+  /* Canvas & Surfaces (Deep, architectural charcoal dark) */
+  --bg-base: #0c0d0e;
+  --bg-card: #141517;
+  --bg-subtle: #191a1d;
+  --bg-elevated: #222428;
+  --bg-glass: rgba(20, 21, 23, 0.85);
 
-  --border: #262626;
-  --border-strong: #333333;
+  /* Borders & Dividers */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --border-glass: rgba(255, 255, 255, 0.06);
 
-  --text-primary: #f0f0f0;
-  --text-secondary: #a3a3a3;
-  --text-tertiary: #525252;
+  /* Typography */
+  --text-primary: #f5f5f6;
+  --text-secondary: #a3a4ab;
+  --text-tertiary: #6b6d75;
+  --text-muted: #43444a;
 
-  --accent: #818cf8;
-  --accent-hover: #6366f1;
-  --accent-subtle: #1e1b4b;
+  /* Accent — Luminous Indigo */
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
+  --accent-subtle: rgba(99, 102, 241, 0.15);
+  --accent-glow: rgba(99, 102, 241, 0.25);
+  --accent-contrast: #ffffff;
+
+  /* Status Colors */
+  --success: #22c55e;
+  --success-subtle: rgba(34, 197, 94, 0.15);
+  --warning: #f59e0b;
+  --warning-subtle: rgba(245, 158, 11, 0.15);
+  --danger: #ef4444;
+  --danger-subtle: rgba(239, 68, 68, 0.15);
+  --streak-fire: #f97316;
+  --streak-subtle: rgba(249, 115, 22, 0.15);
+
+  /* Shadows */
+  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 4px 16px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-floating: 0 16px 32px -4px rgba(0, 0, 0, 0.6), 0 6px 16px -2px rgba(0, 0, 0, 0.4);
 
   --background: var(--bg-base);
   --foreground: var(--text-primary);
@@ -59,7 +109,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* ─── Base ─────────────────────────────────────────────────────────────────── */
+/* ─── Base Typography & Defaults ───────────────────────────────────────────── */
 
 * {
   box-sizing: border-box;
@@ -68,26 +118,35 @@
 html,
 body {
   height: 100%;
-}
-
-body {
-  background: var(--bg-base);
+  background-color: var(--bg-base);
   color: var(--text-primary);
-  font-family: var(--font-geist-sans, system-ui, sans-serif);
+  font-family: var(--font-geist-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Safe area for mobile bottom nav */
-.safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
+/* Glassmorphism utility */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
 }
 
-/* ─── Scrollbar ─────────────────────────────────────────────────────────────── */
+/* Safe areas for mobile */
+.safe-area-pt {
+  padding-top: max(env(safe-area-inset-top), 0px);
+}
+.safe-area-pb {
+  padding-bottom: max(env(safe-area-inset-bottom), 12px);
+}
+
+/* ─── Scrollbars ───────────────────────────────────────────────────────────── */
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -96,14 +155,45 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--border-strong);
-  border-radius: 3px;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-tertiary);
 }
 
-/* ─── Focus visible ──────────────────────────────────────────────────────── */
+/* ─── Micro-Animations ─────────────────────────────────────────────────────── */
+
+@keyframes check-pop {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.animate-check-pop {
+  animation: check-pop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 :focus-visible {
   outline: 2px solid var(--accent);
