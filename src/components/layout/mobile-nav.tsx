@@ -6,9 +6,8 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   CheckSquare,
-  BarChart2,
   Headphones,
-  Settings,
+  Menu,
   Plus,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
@@ -17,14 +16,27 @@ import { useUIStore } from '@/lib/store/ui'
 export function MobileNav() {
   const pathname = usePathname()
   const openHabitForm = useUIStore(s => s.openHabitForm)
+  const mobileMenuOpen = useUIStore(s => s.mobileMenuOpen)
+  const setMobileMenuOpen = useUIStore(s => s.setMobileMenuOpen)
 
   const isTodayActive = pathname === '/dashboard' || pathname === '/'
   const isHabitsActive = pathname.startsWith('/habits')
   const isMusicActive = pathname.startsWith('/music')
-  const isSettingsActive = pathname.startsWith('/settings') || pathname.startsWith('/profile')
+  
+  // Any secondary route is considered "More"
+  const isMoreActive = mobileMenuOpen || [
+    '/routines',
+    '/goals',
+    '/challenges',
+    '/social',
+    '/reviews',
+    '/analytics',
+    '/settings',
+    '/profile'
+  ].some(route => pathname.startsWith(route))
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--bg-card)]/90 backdrop-blur-xl border-t border-[var(--border)] h-16 flex items-center justify-around px-2 safe-area-pb shadow-elevated">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--bg-card)]/95 backdrop-blur-xl border-t border-[var(--border)] h-16 flex items-center justify-around px-2 safe-area-pb shadow-elevated">
       {/* 1. Today */}
       <Link
         href="/dashboard"
@@ -75,22 +87,24 @@ export function MobileNav() {
         )}
       >
         <Headphones className="w-5 h-5" strokeWidth={isMusicActive ? 2.3 : 1.6} />
-        <span className="text-[10px] tracking-tight">Music</span>
+        <span className="text-[10px] tracking-tight">Audio</span>
       </Link>
 
-      {/* 5. Settings / Profile */}
-      <Link
-        href="/settings"
+      {/* 5. More / Features Drawer Trigger */}
+      <button
+        type="button"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         className={cn(
           'flex flex-col items-center justify-center gap-0.5 flex-1 py-1 rounded-xl transition-colors',
-          isSettingsActive
+          isMoreActive
             ? 'text-[var(--accent)] font-semibold'
             : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
         )}
+        aria-label="Open features menu"
       >
-        <Settings className="w-5 h-5" strokeWidth={isSettingsActive ? 2.3 : 1.6} />
-        <span className="text-[10px] tracking-tight">Settings</span>
-      </Link>
+        <Menu className="w-5 h-5" strokeWidth={isMoreActive ? 2.3 : 1.6} />
+        <span className="text-[10px] tracking-tight">More</span>
+      </button>
     </nav>
   )
 }

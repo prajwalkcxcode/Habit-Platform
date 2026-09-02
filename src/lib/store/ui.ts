@@ -9,12 +9,14 @@ interface UIStore {
   habitFormOpen: boolean
   editingHabitId: string | null
   toast: ToastMessage | null
+  mobileMenuOpen: boolean
 
   setSidebarCollapsed: (v: boolean) => void
   openHabitForm: (habitId?: string) => void
   closeHabitForm: () => void
   showToast: (message: string, type?: ToastMessage['type']) => void
   clearToast: () => void
+  setMobileMenuOpen: (v: boolean) => void
 }
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -22,6 +24,7 @@ export const useUIStore = create<UIStore>((set) => ({
   habitFormOpen: false,
   editingHabitId: null,
   toast: null,
+  mobileMenuOpen: false,
 
   setSidebarCollapsed: (v) => set({ sidebarCollapsed: v }),
 
@@ -35,4 +38,6 @@ export const useUIStore = create<UIStore>((set) => ({
     set({ toast: { id: nanoid(), message, type } }),
 
   clearToast: () => set({ toast: null }),
+
+  setMobileMenuOpen: (v) => set({ mobileMenuOpen: v }),
 }))

@@ -3,10 +3,12 @@
 import * as React from 'react'
 import { Sidebar } from './sidebar'
 import { MobileNav } from './mobile-nav'
+import { MobileMenuDrawer } from './mobile-menu-drawer'
 import { Toast } from '@/components/ui/toast'
 import { HabitForm } from '@/components/habits/habit-form'
 import { CommandMenu } from '@/components/command/command-menu'
 import { OfflineBanner } from '@/components/v4/offline-banner'
+import { Menu } from 'lucide-react'
 import { useHabitStore } from '@/lib/store/habits'
 import { useRoutinesStore } from '@/lib/store/routines'
 import { useGoalsStore } from '@/lib/store/goals'
@@ -95,19 +97,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const profile = useProfileStore(s => s.profile)
   const hasSetup = useProfileStore(s => s.hasSetup)
+  const mobileMenuOpen = useUIStore(s => s.mobileMenuOpen)
+  const setMobileMenuOpen = useUIStore(s => s.setMobileMenuOpen)
 
   return (
     <div className="flex h-full flex-col md:flex-row bg-[var(--bg-base)] antialiased overflow-hidden">
-      {/* Mobile Top Header */}
-      <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-[var(--border)] bg-[var(--bg-card)]/90 backdrop-blur-md shrink-0 sticky top-0 z-30 shadow-subtle safe-area-pt">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-[var(--accent)] flex items-center justify-center flex-shrink-0 shadow-xs">
-            <span className="text-white text-xs font-black">H</span>
-          </div>
-          <span className="text-sm font-bold text-[var(--text-primary)] tracking-tight">
-            Habit
-          </span>
-        </Link>
+      {/* Mobile Top Header with Menu Button */}
+      <header className="md:hidden flex items-center justify-between px-3.5 h-14 border-b border-[var(--border)] bg-[var(--bg-card)]/90 backdrop-blur-md shrink-0 sticky top-0 z-30 shadow-subtle safe-area-pt">
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] active:scale-95 transition-all"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-[var(--accent)] flex items-center justify-center flex-shrink-0 shadow-xs">
+              <span className="text-white text-xs font-black">H</span>
+            </div>
+            <span className="text-sm font-bold text-[var(--text-primary)] tracking-tight">
+              Habit
+            </span>
+          </Link>
+        </div>
+
         <div className="flex items-center gap-2">
           <Link
             href="/profile"
@@ -124,6 +138,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <MobileNav />
+      <MobileMenuDrawer open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
       <HabitForm />
       <CommandMenu />
       <OfflineBanner />
