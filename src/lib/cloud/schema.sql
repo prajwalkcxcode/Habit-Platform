@@ -80,3 +80,32 @@ create policy "Users manage own completions" on completions for all using (auth.
 create policy "Users manage own routines" on routines for all using (auth.uid() = user_id);
 create policy "Users manage own goals" on goals for all using (auth.uid() = user_id);
 create policy "Users manage own reflections" on reflections for all using (auth.uid() = user_id);
+
+-- ──── Challenge Rooms (Social Multiplayer) ──────────────────────────
+create table if not exists challenge_rooms (
+  id text primary key,
+  code text unique not null,
+  title text not null,
+  description text,
+  creator_username text not null,
+  target_days int not null,
+  habit_names jsonb not null default '[]',
+  start_date text not null,
+  end_date text not null,
+  participants jsonb not null default '[]',
+  status text not null default 'active',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Index for instant lookup by room code (e.g. 'AB12CD')
+create index if not exists idx_challenge_rooms_code on challenge_rooms(code);
+
+-- Enable RLS
+alter table challenge_rooms enable row level security;
+
+-- Since challenge rooms are shared publicly via 6-digit codes, allow read, insert, and update
+create policy "Public can view challenge rooms" on challenge_rooms for select using (true);
+create policy "Public can insert challenge rooms" on challenge_rooms for insert with check (true);
+create policy "Public can update challenge rooms" on challenge_rooms for update using (true);
+
