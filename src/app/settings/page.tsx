@@ -78,6 +78,23 @@ export default function SettingsPage() {
     }
   }
 
+  const handleGoogleSignIn = async () => {
+    if (!supabase) return
+    setAuthLoading(true)
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/settings` : undefined,
+        },
+      })
+      if (error) throw error
+    } catch (err: any) {
+      showToast(err.message, 'error')
+      setAuthLoading(false)
+    }
+  }
+
   const handleSignOut = async () => {
     if (!supabase) return
     await supabase.auth.signOut()
@@ -251,29 +268,53 @@ export default function SettingsPage() {
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={handleAuth} className="space-y-3 border-t border-[var(--border)] pt-4">
+                <div className="space-y-3 border-t border-[var(--border)] pt-4">
                   <p className="text-xs font-semibold text-[var(--text-primary)]">Sign in to sync devices</p>
-                  
-                  <div className="space-y-2">
-                    <div>
-                      <Label className="mb-1 block text-xs">Email</Label>
-                      <Input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
-                    </div>
-                    <div>
-                      <Label className="mb-1 block text-xs">Password</Label>
-                      <Input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
-                    </div>
+
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="w-full flex items-center justify-center gap-2 border border-[var(--border)] py-2 text-xs font-medium"
+                    onClick={handleGoogleSignIn}
+                    disabled={authLoading}
+                  >
+                    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                      <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z" />
+                      <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z" />
+                      <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 12 0 14.5s.7 4.8 1.9 7.2l3.7-2.9z" />
+                      <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 17.4C3.7 21.1 7.5 24 12 24z" />
+                    </svg>
+                    Continue with Google
+                  </Button>
+
+                  <div className="flex items-center gap-2 py-1">
+                    <div className="flex-1 h-px bg-[var(--border)]" />
+                    <span className="text-[10px] text-[var(--text-tertiary)] uppercase font-mono">or email</span>
+                    <div className="flex-1 h-px bg-[var(--border)]" />
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 pt-2">
-                    <button type="button" className="text-xs text-[var(--accent)] hover:underline" onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}>
-                      {authMode === 'signin' ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
-                    </button>
-                    <Button type="submit" size="sm" disabled={authLoading}>
-                      {authLoading ? 'Loading...' : authMode === 'signin' ? 'Sign In' : 'Sign Up'}
-                    </Button>
-                  </div>
-                </form>
+                  <form onSubmit={handleAuth} className="space-y-3">
+                    <div className="space-y-2">
+                      <div>
+                        <Label className="mb-1 block text-xs">Email</Label>
+                        <Input type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
+                      </div>
+                      <div>
+                        <Label className="mb-1 block text-xs">Password</Label>
+                        <Input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 pt-2">
+                      <button type="button" className="text-xs text-[var(--accent)] hover:underline" onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}>
+                        {authMode === 'signin' ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                      </button>
+                      <Button type="submit" size="sm" disabled={authLoading}>
+                        {authLoading ? 'Loading...' : authMode === 'signin' ? 'Sign In' : 'Sign Up'}
+                      </Button>
+                    </div>
+                  </form>
+                </div>
               )}
             </div>
           ) : (
